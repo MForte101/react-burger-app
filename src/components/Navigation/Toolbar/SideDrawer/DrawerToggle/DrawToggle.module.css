@@ -1,0 +1,24 @@
+.DrawToggle {
+    border: .1em yellow;
+    border-style: solid;
+    height:90%;
+    box-sizing: border-box;
+    border-radius: 4px;
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
+.DrawToggle p {
+    color: yellow;
+    
+}
+
+
+@media (min-width: 500px) {
+    .DrawToggle {
+        display: none;
+        
+    }
+
+}
+
