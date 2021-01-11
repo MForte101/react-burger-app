@@ -5,6 +5,9 @@ import BuildControls from '../../components/Burger/BuildControls/BuildControls';
 import TotalPrice from '../../components/Burger/TotalPrice/TotalPrice';
 import Modal from '../../components/UI/Modal/Modal';
 import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary';
+import axiosOrders from '../../axiosOrders';
+import Spinner from '../../components/Spinner/Spinner';
+import ErrorHandler from '../../hoc/ErrorHandler/ErrorHandler';
 
 const INGREDIENT_PRICES = {
     salad: .25,
@@ -25,6 +28,7 @@ class BurgerBuilder extends Component {
         totalPrice: 4,
         purchaseable: false,
         checkingOut: false,
+        loading: false,
     }
 
     updatePurchaseState = (ingredients) => {
@@ -102,11 +106,47 @@ class BurgerBuilder extends Component {
     }
 
     proceedToCheckOutHandlder = () => {
-        alert('Moved to Checkout');
-    }
+        //alert('Moved to Checkout');
+        this.setState({
+            loading: true,
+        })
+        const order = {
+            ingredients: this.state.ingredients,
+            price: this.state.totalPrice,
+            customer: {
+                name: 'Mark Forte',
+                adress: {
+                    street: '2400 Spruce Ave.',
+                    zipCode: '19100',
+                    country: 'USA',
+                    },
+                email: 'markDoe@gmail.com',
+                },
+            deliveryMethod: 'Overnight',
+            }
+
+        axiosOrders.post('/orders.json', order).then(
+            response => {
+                this.setState({
+                    loading: false,
+                    checkingOut: false,
+                })
+            }).catch(
+                error => {
+                    console.log(error);
+                    this.setState({
+                        loading: false,
+                        checkingOut: false,
+                    })
+                }
+            );
+
+        }
+        
+    
 
 
-
+s
     render() {
 
         const disabledInfo = {
@@ -117,15 +157,19 @@ class BurgerBuilder extends Component {
             disabledInfo[key] = disabledInfo[key] <=0
         }
 
+        let orderSummary = <OrderSummary ingredients={this.state.ingredients}
+        cancelClick={this.closeModal}
+        checkout={this.proceedToCheckOutHandlder}
+        totalPrice={this.state.totalPrice}></OrderSummary> 
 
+        if (this.state.loading) {
+            orderSummary = <Spinner />
+        }
 
         return(
             <Aux>
                 <Modal show={this.state.checkingOut} modalClosed={this.closeModal}>
-                 <OrderSummary ingredients={this.state.ingredients}
-                 cancelClick={this.closeModal}
-                 checkout={this.proceedToCheckOutHandlder}
-                 totalPrice={this.state.totalPrice}></OrderSummary>   
+                {orderSummary}
                 </Modal>
                 <Burger ingredients={this.state.ingredients} />
                 <TotalPrice price={this.state.totalPrice} />
@@ -141,4 +185,4 @@ class BurgerBuilder extends Component {
 
 };
 
-export default BurgerBuilder;
+export default ErrorHandler(BurgerBuilder);
