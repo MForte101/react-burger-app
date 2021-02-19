@@ -27,6 +27,7 @@ class BurgerBuilder extends Component {
     }
 
     componentDidMount() {
+        console.log(this.props);
         axiosOrders.get('https://react-simple-burger-default-rtdb.firebaseio.com/Ingredients.json').then(
             response => {
                 this.setState({
@@ -111,40 +112,24 @@ class BurgerBuilder extends Component {
     }
 
     proceedToCheckOutHandlder = () => {
-        //alert('Moved to Checkout');
-        this.setState({
-            loading: true,
-        })
-        const order = {
-            ingredients: this.state.ingredients,
-            price: this.state.totalPrice,
-            customer: {
-                name: 'Mark Forte',
-                adress: {
-                    street: '2400 Spruce Ave.',
-                    zipCode: '19100',
-                    country: 'USA',
-                    },
-                email: 'markDoe@gmail.com',
-                },
-            deliveryMethod: 'Overnight',
-            }
+        //Advance to checkout
+        this.props.history.push('/checkout');
 
-        axiosOrders.post('/orders.json', order).then(
-            response => {
-                this.setState({
-                    loading: false,
-                    checkingOut: false,
-                })
-            }).catch(
-                error => {
-                    console.log(error);
-                    this.setState({
-                        loading: false,
-                        checkingOut: false,
-                    })
-                }
-            );
+        const queryParams = [];
+        for (let i in this.state.ingredients) {
+            queryParams.push(encodeURIComponent(i) + '=' + encodeURIComponent(this.state.ingredients[i]));
+        }
+        const queryString = queryParams.join('&');
+        this.props.history.push({
+            pathName: '/checkout',
+            search: '?' + queryString,
+        });
+
+        //alert('Moved to Checkout');
+        // this.setState({
+        //     loading: true,
+        // })
+
 
         }
         
