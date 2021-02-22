@@ -5,6 +5,7 @@ import ContactInfo from '../Checkout/ContactInfo/ContactInfo';
 
 const Checkout = (props) => {
     let [ingredientList, setIngredientList] = useState({});
+    let [totalPrice, setTotalPrice] = useState(0);
 
 
     useEffect(() => {   
@@ -12,13 +13,18 @@ const Checkout = (props) => {
             console.log(props.location);
             const query = new URLSearchParams(props.location.search);
             const ingredientObject = {};
+            let price = 0;
             for (let param of query.entries()) {
                 if (param[0] === 'price') {
-                    
+                    price = param[1];
                 }
-                ingredientObject[param[0]] = +param[1];
+                else {
+                    ingredientObject[param[0]] = +param[1];
+                }
+
             }
             setIngredientList(ingredientObject);
+            setTotalPrice(price);
             console.log('Ingredient Object:');
             console.log(ingredientObject);
     
@@ -46,10 +52,9 @@ const Checkout = (props) => {
                 ingredients={ingredientList} 
             />
             <Route path={ props.match.path + '/contact-info'} 
-            render={() => (
-            <ContactInfo ingredients={ingredientList} />
-
-            )
+            render={(props) => (
+            <ContactInfo ingredients={ingredientList} price={totalPrice} {...props} />
+                )
             }/>
         </div>
     );
