@@ -6,7 +6,8 @@ import ContactInfo from '../Checkout/ContactInfo/ContactInfo';
 const Checkout = (props) => {
     let [ingredientList, setIngredientList] = useState({});
     let [totalPrice, setTotalPrice] = useState(0);
-
+    console.log('Checkout Props');
+    console.log(props);
 
     useEffect(() => {   
         async function handleCheckout(){
