@@ -3,17 +3,18 @@ import Button from '../../../components/UI/Button/Button';
 import classes from './ContactInfo.module.css';
 import axiosOrders from '../../../axiosOrders';
 import Spinner from '../../../components/Spinner/Spinner';
+import Input from '../../../components/UI/Input/Input';
 
 const ContactInfo = (props) => {
-    let [loading, setLoading] = useState(false);
-    let [name, setName] = useState('');
-    let [email, setEmail] = useState('');
-    let [address, setAddress] = useState({
+    let [orderForm, setOrderForm] = useState({
+        name: '',
         street: '',
-        postalCode: '',
-    });
-
-    console.log(props);
+        zipCode: '',
+        country: '',
+        email: '',
+        deliveryMethod: '',
+    })
+    let [loading, setLoading] = useState(false);
 
     const orderHandler = (e) => {
         e.preventDefault();
@@ -57,10 +58,10 @@ const ContactInfo = (props) => {
             <div className={classes.ContactInfo}>
                 <h4>Enter your contact information</h4>
                 <form>
-                    <input className={classes.input} type="text" name="name" placeholder="Your name" />
-                    <input className={classes.input} type="email" name="email" placeholder="Your email" />
-                    <input  className={classes.input}type="text" name="street" placeholder="Street" />
-                    <input className={classes.input} type="text" name="postal" placeholder="Postal Code" />
+                    <Input  inputtype="input"  type="text" name="name" placeholder="Your name" />
+                    <Input  inputtype="input" type="email" name="email" placeholder="Your email" />
+                    <Input  inputtype="input" type="text" name="street" placeholder="Street" />
+                    <Input  inputtype="input" type="text" name="postal" placeholder="Postal Code" />
                     <Button clicked={orderHandler} btnType="Success">ORDER</Button>
                 </form>
             </div>
