@@ -7,6 +7,8 @@ import Input from '../../../components/UI/Input/Input';
 import { Switch } from 'react-router-dom';
 
 const ContactInfo = (props) => {
+    let [loading, setLoading] = useState(false);
+    let [validForm, setValidForm] = useState(false);
     let [orderForm, setOrderForm] = useState({
         name: {
             elementType: 'input',
@@ -17,7 +19,9 @@ const ContactInfo = (props) => {
             value: '',
             validation: {
                 required: true,
-            }
+            },
+            valid: false,
+            touched: false,
         },
         street: {
             elementType: 'input',
@@ -28,7 +32,9 @@ const ContactInfo = (props) => {
             value: '',
             validation: {
                 required: true,
-            }
+            },
+            valid: false,
+            touched: false,
         },
         zipCode: {
             elementType: 'input',
@@ -39,7 +45,11 @@ const ContactInfo = (props) => {
             value: '',
             validation: {
                 required: true,
-            }
+                minLength: 5,
+                maxLength: 5,
+            },
+            valid: false,
+            touched: false,
         },
         country: {
             elementType: 'input',
@@ -50,7 +60,9 @@ const ContactInfo = (props) => {
             value: '',
             validation: {
                 required: true,
-            }
+            },
+            valid: false,
+            touched: false,
         },
         email: {
             elementType: 'input',
@@ -61,7 +73,9 @@ const ContactInfo = (props) => {
             value: '',
             validation: {
                 required: true,
-            }
+            },
+            valid: false,
+            touched: false,
         },
         deliveryMethod: {
             elementType: 'select',
@@ -74,12 +88,31 @@ const ContactInfo = (props) => {
             }]
             },
             value: '',
-            validation: {
-                required: true,
-            }
+            validation: {},
+            valid: true,
         },
     });
-    let [loading, setLoading] = useState(false);
+
+
+    const checkValidation = (value, rules) => {
+        let isValid = true;
+        
+        
+        if (rules.required) {
+            isValid = value.trim() !== '' && isValid;
+        }
+
+        if(rules.minLength) {
+            isValid = value.length >= rules.minLength && isValid;
+        }
+
+        if(rules.maxLength) {
+            isValid = value.length <= rules.maxLength && isValid;
+        }
+
+        return isValid;
+    }
+
 
     const formElementsArray = [];
 
@@ -120,8 +153,18 @@ const ContactInfo = (props) => {
         const copyOfForm = {...orderForm};
         const updatedFormElement = {...copyOfForm[inputID]}
         updatedFormElement.value = event.target.value;
+        updatedFormElement.valid = checkValidation(updatedFormElement.value, updatedFormElement.validation);
+        updatedFormElement.touched = true;
         copyOfForm[inputID] = updatedFormElement;
+
+        let formIsValid = true;
+
+        for (let inputIdentifier in copyOfForm) {
+            formIsValid = copyOfForm[inputIdentifier].valid && formIsValid;
+        }
+
         setOrderForm(copyOfForm);
+        setValidForm(formIsValid);
 
 
     }
@@ -142,9 +185,12 @@ const ContactInfo = (props) => {
                         elementType={formElement.config.elementType}
                         elementConfig={formElement.config.elementConfig} 
                         value={formElement.value}
+                        invalid={!formElement.config.valid}
+                        shouldValidate={formElement.config.validation}
+                        touched={formElement.config.touched}
                         changed={(event) => inputChangeHandler(event, formElement.id)} />
                     ))}
-                    <Button clicked={orderHandler} btnType="Success">ORDER</Button>
+                    <Button disabled={!validForm} clicked={orderHandler} btnType="Success">ORDER</Button>
                 </form>
             </div>
         )

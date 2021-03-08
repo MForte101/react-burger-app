@@ -26,3 +26,13 @@
     background-color: #ccc;
 
 }
+
+.Invalid {
+    border: 1px solid red;
+    background-color: rgb(252, 153, 142);
+}
+
+.ErrorMessage {
+    color:red;
+    margin-top: 0;
+}
