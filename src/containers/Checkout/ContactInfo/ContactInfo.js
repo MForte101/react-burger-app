@@ -4,7 +4,7 @@ import classes from './ContactInfo.module.css';
 import axiosOrders from '../../../axiosOrders';
 import Spinner from '../../../components/Spinner/Spinner';
 import Input from '../../../components/UI/Input/Input';
-import { Switch } from 'react-router-dom';
+import { connect } from 'react-redux';
 
 const ContactInfo = (props) => {
     let [loading, setLoading] = useState(false);
@@ -131,7 +131,7 @@ const ContactInfo = (props) => {
             formData[formElementID] = orderForm[formElementID].value;
         }
         const order = {
-            ingredients: props.ingredients,
+            ingredients: props.ings,
             price: props.price,
             orderData: formData,
             }
@@ -200,4 +200,12 @@ const ContactInfo = (props) => {
 
 }
 
-export default ContactInfo;
+const mapStateToProps = state => {
+    return {
+        ings: state.ingredients,
+        price: state.totalPrice
+    }
+}
+
+
+export default connect(mapStateToProps)(ContactInfo);
