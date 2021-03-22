@@ -1,35 +1,46 @@
-import React, { useState, useEffect } from 'react';
-import { Route } from 'react-router-dom';
-import CheckoutSummary from '../../components/Order/CheckoutSummary/CheckoutSummary';
-import ContactInfo from '../Checkout/ContactInfo/ContactInfo';
+import React, { Component } from 'react';
+import { Route, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-const Checkout = (props) => {
+import CheckoutSummary from '../../components/Order/CheckoutSummary/CheckoutSummary';
+import ContactData from './ContactInfo/ContactInfo';
 
-    const checkoutCancelledHandler = () => {
-        props.history.goBack();
-    };
+class Checkout extends Component {
 
-    const checkoutContinuedHandler = () => {
-        props.history.replace('/checkout/contact-info');
-    }; 
+    checkoutCancelledHandler = () => {
+        this.props.history.goBack();
+    }
 
-    return (
-        <div>
-            <CheckoutSummary 
-                checkoutCancelled={checkoutCancelledHandler} 
-                checkoutContinued={checkoutContinuedHandler} 
-                ingredients={props.ings} 
-            />
-            <Route path={ props.match.path + '/contact-info'} component={ContactInfo} />
-        </div>
-    );
+    checkoutContinuedHandler = () => {
+        this.props.history.replace( '/checkout/contact-data' );
+    }
+
+    render () {
+        let summary = <Redirect to="/" />
+        if ( this.props.ings ) {
+            const purchasedRedirect = this.props.purchased ? <Redirect to="/"/> : null;
+            summary = (
+                <div>
+                    {purchasedRedirect}
+                    <CheckoutSummary
+                        ingredients={this.props.ings}
+                        checkoutCancelled={this.checkoutCancelledHandler}
+                        checkoutContinued={this.checkoutContinuedHandler} />
+                    <Route
+                        path={this.props.match.path + '/contact-data'}
+                        component={ContactData} />
+                </div>
+            );
+        }
+        return summary;
+    }
 }
 
 const mapStateToProps = state => {
     return {
-        ings: state.ingredients,
+        ings: state.burgerBuilder.ingredients,
+        purchased: state.order.purchased
     }
-}
+};
 
-export default connect(mapStateToProps)(Checkout);
+export default connect( mapStateToProps )( Checkout );
