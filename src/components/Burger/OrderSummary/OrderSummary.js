@@ -5,7 +5,6 @@ import Button from '../../UI/Button/Button';
 
 class OrderSummary extends Component {
     componentDidUpdate() {
-        console.log('Order Updated');
     }
 
     render () {
@@ -23,9 +22,9 @@ class OrderSummary extends Component {
             <ul>
                 {ingredientSummary}
             </ul>
-            <p><strong>Total Price: ${this.props.totalPrice.toFixed(2)}</strong></p>
-            <Button btnType="Danger" clicked={this.props.cancelClick}>Back</Button>
-            <Button btnType="Success" clicked={this.props.checkout} >Checkout</Button>
+            <p><strong>Total Price: ${this.props.price.toFixed(2)}</strong></p>
+            <Button btnType="Danger" clicked={this.props.purchaseCancelled}>Back</Button>
+            <Button btnType="Success" clicked={this.props.purchaseContinued} >Checkout</Button>
             </Auxillary>
         );
 
