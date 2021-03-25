@@ -11,11 +11,8 @@ import * as actionCreators from '../../store/actions/index';
 import axiosOrders from '../../axiosOrders';
 
 
-class BurgerBuilder extends Component {
-    // constructor(props) {
-    //     super(props);
-    //     this.state = {...}
-    // }
+export class BurgerBuilder extends Component {
+
     state = {
         purchasing: false
     }
