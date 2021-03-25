@@ -4,6 +4,7 @@ import classes from './ContactInfo.module.css';
 import Spinner from '../../../components/Spinner/Spinner';
 import Input from '../../../components/UI/Input/Input';
 import { connect } from 'react-redux';
+import { updateObject, checkValidation } from '../../../shared/utility';
 import ErrorHandler  from '../../../hoc/ErrorHandler/ErrorHandler';
 import * as actionCreators from '../../../store/actions/index';
 
@@ -96,24 +97,7 @@ const ContactInfo = (props) => {
     });
 
 
-    const checkValidation = (value, rules) => {
-        let isValid = true;
-        
-        
-        if (rules.required) {
-            isValid = value.trim() !== '' && isValid;
-        }
 
-        if(rules.minLength) {
-            isValid = value.length >= rules.minLength && isValid;
-        }
-
-        if(rules.maxLength) {
-            isValid = value.length <= rules.maxLength && isValid;
-        }
-
-        return isValid;
-    }
 
 
     const formElementsArray = [];
@@ -144,11 +128,17 @@ const ContactInfo = (props) => {
     }
 
     const inputChangeHandler = (event, inputID) => {
-        const copyOfForm = {...orderForm};
-        const updatedFormElement = {...copyOfForm[inputID]}
-        updatedFormElement.value = event.target.value;
-        updatedFormElement.valid = checkValidation(updatedFormElement.value, updatedFormElement.validation);
-        updatedFormElement.touched = true;
+
+        const updatedFormElement = updateObject(orderForm[inputID],{
+            value: event.target.value,
+            valid: checkValidation(event.target.value, orderForm[inputID].validation),
+            touched: true, 
+        });
+
+        const copyOfForm = updateObject(orderForm, {
+            [inputID]: updatedFormElement
+        });
+
         copyOfForm[inputID] = updatedFormElement;
 
         let formIsValid = true;
