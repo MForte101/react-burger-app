@@ -8,7 +8,6 @@ class Logout extends Component {
 
 
     componentDidMount () {
-        console.log('Should be logging out');
         this.props.onLogout();
     }
     render () {
